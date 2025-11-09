@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+.page-header {
+    text-align: center;
+    padding: 40px 0;
+    background: linear-gradient(135deg, #2b5797, #1a3d73);
+    color: #fff;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+.table thead {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+.btn-download {
+    background: #2b5797;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
+.btn-download:hover {
+    background: #1a3d73;
+}
+</style>
+
+<div class="container mt-4">
+    <div class="page-header">
+        <h2>{{ job.title }} — Best Matching Candidates</h2>
+        <p>Filtered using AI (Cosine Similarity)</p>
+    </div>
+
+    <div class="text-center mb-4">
+        <form method="get" class="form-inline justify-content-center">
+            <label class="mr-2 font-weight-bold">Show Top:</label>
+            <select name="top" class="form-control mr-2" style="width: 100px;">
+                <option value="5" {% if top_n == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if top_n == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if top_n == 20 %}selected{% endif %}>20</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+
+    {% if top_candidates %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>Candidate Name</th>
+                    <th>Email</th>
+                    <th>Similarity (%)</th>
+                    <th>Applied On</th>
+                    <th>Resume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in top_candidates %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.candidate.full_name }}</td>
+                    <td>{{ item.candidate.user.email }}</td>
+                    <td>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ item.score }}%;" aria-valuenow="{{ item.score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small>{{ item.score }}%</small>
+                    </td>
+                    <td>{{ item.applied_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if item.resume %}
+                        <a href="{{ item.resume }}" target="_blank" class="btn btn-download">
+                            <i class="fa fa-download"></i> Download
+                        </a>
+                        {% else %}
+                        <span class="text-muted">No resume</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            No candidates have applied yet.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

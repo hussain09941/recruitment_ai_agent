@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-5">
+      <h2 class="text-center mb-4 text-primary fw-bold">Apply for {{ job.title }}</h2>
+      
+      <div class="mb-3 text-center">
+        <p class="mb-1"><strong>Company:</strong> {{ job.company.company_name }}</p>
+        <p class="mb-1"><strong>Location:</strong> {{ job.location }}</p>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-4">
+          <label for="resume" class="form-label fw-semibold">Upload Resume (optional)</label>
+          <input type="file" name="resume" class="form-control" accept=".pdf,.doc,.docx">
+          <div class="form-text">Accepted formats: .pdf, .doc, .docx</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="cover_letter" class="form-label fw-semibold">Cover Letter</label>
+          <textarea 
+            name="cover_letter" 
+            class="form-control" 
+            rows="6" 
+            placeholder="Write something about yourself, your experience, and why you’re interested in this job..." 
+            required></textarea>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg rounded-3 shadow-sm">
+            <i class="bi bi-send me-2"></i>Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Optional Bootstrap validation script -->
+<script>
+  (function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>
+{% endblock %}

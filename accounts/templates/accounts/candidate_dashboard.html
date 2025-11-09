@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Candidate Dashboard</h2>
+<p>Welcome, {{ user.username }}!</p>
+<p>Your resume: <a href="{{ user.profile.resume.url }}">Download</a></p>
+
+<h3>Available Jobs</h3>
+<ul>
+    {% for job in jobs %}
+    <li>
+        <strong>{{ job.title }}</strong> — {{ job.company.company_name }}<br>
+        <a href="{% url 'job_detail' job.id %}">View Details</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
