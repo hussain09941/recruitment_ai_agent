@@ -1,0 +1,1 @@
+gunicorn recruitment_ai.wsgi:application
